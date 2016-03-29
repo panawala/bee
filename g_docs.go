@@ -529,9 +529,14 @@ func getparams(str string) []string {
 }
 
 func getModel(str string) (pkgpath, objectname string, m swagger.Model, realTypes []string) {
+	tempStr := "$"
+	str = strings.Replace(str, "..", tempStr, -1)
 	strs := strings.Split(str, ".")
 	objectname = strs[len(strs)-1]
 	pkgpath = strings.Join(strs[:len(strs)-1], "/")
+	if strings.HasPrefix(pkgpath, tempStr) {
+		pkgpath = strings.Replace(pkgpath, tempStr, "/../", 1)
+	}
 	curpath, _ := os.Getwd()
 	pkgRealpath := path.Join(curpath, pkgpath)
 	fileSet := token.NewFileSet()
